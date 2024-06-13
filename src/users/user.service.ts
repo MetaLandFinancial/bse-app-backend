@@ -11,4 +11,15 @@ export class UserService {
   ) {}
 
   // Service methods to interact with the user repository
+  async insertUser(id: bigint, email: string, username: string, alias: string, hashedPassword: string | null): Promise<User> {
+
+    try {
+
+        
+       
+
+    } catch (error) {
+
+    }
+}
 }
