@@ -1,9 +1,10 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { UserAlreadyExistsException } from '../exceptions/user-already-exists.exception';
 
 @Injectable()
 export class UserService {
@@ -18,7 +19,7 @@ export class UserService {
     // Check if user with the same email or username already exists
     const existingUser = await this.userRepository.findOne({ where: [{ email }, { username }] });
     if (existingUser) {
-      throw new ConflictException('Email or username already exists');
+      throw new UserAlreadyExistsException('Email or username already exists');
     }
 
     // Hash the password
