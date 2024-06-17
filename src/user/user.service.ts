@@ -1,8 +1,9 @@
-import { Injectable,NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserSignInDto } from './dto/user-sign-in.dto';
 import * as bcrypt from 'bcrypt';
 import { UserAlreadyExistsException } from '../exceptions/user-already-exists.exception';
 
@@ -49,5 +50,25 @@ export class UserService {
     }
     return user;
     
-}
+  }
+
+  async signIn(userSignInDto: UserSignInDto): Promise<string> {
+    const { email, password } = userSignInDto;
+
+    // Find the user by email
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Compare the provided password with the stored hash
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Here you would typically generate a JWT or some other token
+    // For simplicity, we are returning a success message
+    return 'Sign-in successful';
+  }
 }
