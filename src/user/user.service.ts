@@ -33,7 +33,7 @@ export class UserService {
       username,
       password_hash,
     });
-
+    console.log('User:', user);
     // Save the user to the database
     return this.userRepository.save(user);
   }
@@ -43,7 +43,7 @@ export class UserService {
     const query = `SELECT * FROM "users" WHERE "email" = $1 LIMIT 1`;
     const result = await this.userRepository.query(query, [email]);
     const user = result[0];
-    
+
     if (!user) {
         throw new NotFoundException(`No user found with email: ${email}`);
     }

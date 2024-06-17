@@ -3,6 +3,7 @@ import { UserService } from '../../src/user/user.service';
 import { User } from '../../src/user/user.entity';
 import { AppModule } from '../../src/app.module';
 import { NotFoundException, InternalServerErrorException } from '@nestjs/common';
+import { CreateUserDto } from '../../src/user/dto/create-user.dto';
 
 // npx jest test/user/user.service.spec.ts
 describe('UsersService Integration Test', () => {
@@ -29,5 +30,17 @@ describe('UsersService Integration Test', () => {
     //     const username = 'nonexistentUsername';
     //     await expect(service.findByUsername(username)).rejects.toThrow(NotFoundException);
     // });
+    it('should successfully create a user', async () => {
+        // Test to find an existing user
+        const createUserDto: CreateUserDto = {
+            email: 'test@example.com',
+            username: 'testuser',
+            password: 'password123',
+        };
+        const user = await service.createUser(createUserDto);
+        console.log('test User:', user);
+        // expect(user).toBeDefined();
+        // expect(user.username).toEqual(email);
+    });
   
 });
