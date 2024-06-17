@@ -52,7 +52,7 @@ export class UserService {
     
   }
 
-  async signIn(userSignInDto: UserSignInDto): Promise<string> {
+  async signIn(userSignInDto: UserSignInDto): Promise<any> {
     const { email, password } = userSignInDto;
 
     // Find the user by email
@@ -69,6 +69,6 @@ export class UserService {
 
     // Here you would typically generate a JWT or some other token
     // For simplicity, we are returning a success message
-    return 'Sign-in successful';
+    return true;
   }
 }
