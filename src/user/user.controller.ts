@@ -11,24 +11,33 @@ export class UserController {
   @Post('sign-up')
   @HttpCode(HttpStatus.CREATED)
   async signUp(@Body() createUserDto: CreateUserDto): Promise<any> {
-    const user = this.userService.createUser(createUserDto);
-    return {
-      statusCode: 201,
-      status: 'success',
-      message: 'Sign up successfully',
-      data: user,
-    };
+    try {
+      const user = this.userService.createUser(createUserDto);
+      return {
+        statusCode: 201,
+        status: 'success',
+        message: 'Sign up successfully',
+        data: user,
+      };
+    } catch (error) {
+      throw error;
+    }
+
   }
 
   @Post('sign-in')
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.OK)
   async signIn(@Body() userSignInDto: UserSignInDto): Promise<any> {
-    const user = this.userService.signIn(userSignInDto);
-    return {
-      statusCode: 200,
-      status: 'success',
-      message: 'Sign in successfully',
-      data: user,
-    };
+    try {
+      const user = await this.userService.signIn(userSignInDto);
+      return {
+        statusCode: 200,
+        status: 'success',
+        message: 'Sign in successfully',
+        data: user,
+      };
+    } catch (error) {
+      throw error; // Ensure the error is thrown to be caught by the global exception filter
+    }
   }
 }

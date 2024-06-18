@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -14,6 +14,20 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+
+
+  async findUserByEmail(email: string): Promise<User | undefined> {
+    
+    const query = `SELECT * FROM "users" WHERE "email" = $1 LIMIT 1`;
+    const result = await this.userRepository.query(query, [email]);
+    const user = result[0];
+
+    if (!user) {
+        throw new NotFoundException(`No user found with email: ${email}`);
+    }
+    return user;
+    
+  }
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const { email, username, password } = createUserDto;
@@ -37,19 +51,6 @@ export class UserService {
     console.log('User:', user);
     // Save the user to the database
     return this.userRepository.save(user);
-  }
-
-  async findUserByEmail(email: string): Promise<User | undefined> {
-    
-    const query = `SELECT * FROM "users" WHERE "email" = $1 LIMIT 1`;
-    const result = await this.userRepository.query(query, [email]);
-    const user = result[0];
-
-    if (!user) {
-        throw new NotFoundException(`No user found with email: ${email}`);
-    }
-    return user;
-    
   }
 
   async signIn(userSignInDto: UserSignInDto): Promise<any> {
