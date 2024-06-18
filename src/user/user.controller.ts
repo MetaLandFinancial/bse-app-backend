@@ -29,12 +29,12 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async signIn(@Body() userSignInDto: UserSignInDto): Promise<any> {
     try {
-      const user = await this.userService.signIn(userSignInDto);
+      const { accessToken } = await this.userService.signIn(userSignInDto);
       return {
         statusCode: 200,
         status: 'success',
         message: 'Sign in successfully',
-        data: user,
+        data: { accessToken },
       };
     } catch (error) {
       throw error; // Ensure the error is thrown to be caught by the global exception filter

@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../../src/user/user.service';
 import { User } from '../../src/user/user.entity';
 import { AppModule } from '../../src/app.module';
@@ -9,6 +10,7 @@ import { UserSignInDto } from '../../src/user/dto/user-sign-in.dto';
 // npx jest test/user/user.service.spec.ts
 describe('UsersService Integration Test', () => {
     let service: UserService;
+    let jwtService: JwtService;
 
     beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -16,6 +18,7 @@ describe('UsersService Integration Test', () => {
         }).compile();
 
         service = module.get<UserService>(UserService);
+        jwtService = module.get<JwtService>(JwtService);
     });
 
     it('should find an existing user by email', async () => {
@@ -49,11 +52,13 @@ describe('UsersService Integration Test', () => {
           email: 'test@example.com',
           password: 'password123'
         };
-   
   
         const result = await service.signIn(userSignInDto);
-        console.log("test sign in result", result);
-        expect(result).toEqual(true);
+
+        const decoded = jwtService.decode(result.accessToken);
+        const resultEmail = decoded.payload.email;
+
+        expect(resultEmail).toEqual(userSignInDto.email);
       });
 
       it('should throw an error if password is incorrect', async () => {

@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -12,6 +13,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
 
@@ -70,6 +72,8 @@ export class UserService {
 
     // Here you would typically generate a JWT or some other token
     // For simplicity, we are returning a success message
-    return true;
+    const payload = { email: user.email, sub: user.id };
+    const accessToken = this.jwtService.sign({payload});
+    return { accessToken };
   }
 }
