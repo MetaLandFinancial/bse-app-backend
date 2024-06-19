@@ -81,4 +81,22 @@ export class UserService {
     const accessToken = this.jwtService.sign({payload});
     return { accessToken };
   }
+
+  async createOrUpdateEmailCode(createEmailCodeDto: CreateEmailCodeDto): Promise<EmailCode> {
+    const { email, level } = createEmailCodeDto;
+
+    // Check if an email code with the same email and level already exists
+    let emailCode = await this.emailCodeRepository.findOne({ where: { email, level } });
+
+    if (emailCode) {
+      // Update the existing email code
+      emailCode.email_code = createEmailCodeDto.email_code;
+      emailCode.expires_at = createEmailCodeDto.expires_at;
+    } else {
+      // Create a new email code
+      emailCode = this.emailCodeRepository.create(createEmailCodeDto);
+    }
+
+    return await this.emailCodeRepository.save(emailCode);
+  }
 }
