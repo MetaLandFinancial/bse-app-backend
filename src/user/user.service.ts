@@ -3,10 +3,13 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
+import { EmailCode } from './email-code.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserSignInDto } from './dto/user-sign-in.dto';
 import * as bcrypt from 'bcrypt';
 import { UserAlreadyExistsException } from '../exceptions/user-already-exists.exception';
+
+import { CreateEmailCodeDto } from './dto/create-email-code.dto';
 
 @Injectable()
 export class UserService {
@@ -14,6 +17,8 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
+    @InjectRepository(EmailCode)
+    private readonly emailCodeRepository: Repository<EmailCode>
   ) {}
 
 

@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { User } from './user/user.entity';
-// import { EmailLoginCode } from './auth/entities/email-login-code.entity';
+import { EmailCode } from './user/email-code.entity';
 import { UserModule } from './user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -23,7 +23,7 @@ import { AppService } from './app.service';
 			username: configService.get<string>('PG_USER'),
 			password: configService.get<string>('PG_PASSWORD'),
 			database: configService.get<string>('PG_DATABASE'),
-			entities: [User],
+			entities: [User, EmailCode],
 			synchronize: false,
 			logging: true,  // Enable logging. It shows query and error logs
 			
