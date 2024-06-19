@@ -1,6 +1,8 @@
+import 'dotenv/config';
 import { Injectable, NotFoundException, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { EmailCode } from './email-code.entity';
@@ -8,8 +10,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserSignInDto } from './dto/user-sign-in.dto';
 import * as bcrypt from 'bcrypt';
 import { UserAlreadyExistsException } from '../exceptions/user-already-exists.exception';
-
-import { CreateEmailCodeDto } from './dto/create-email-code.dto';
+import { CreateEmailCodeDto, EmailCodeLevel } from './dto/create-email-code.dto';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class UserService {
@@ -18,7 +20,8 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
     @InjectRepository(EmailCode)
-    private readonly emailCodeRepository: Repository<EmailCode>
+    private readonly emailCodeRepository: Repository<EmailCode>,
+    private readonly configService: ConfigService,
   ) {}
 
 
@@ -98,5 +101,56 @@ export class UserService {
     }
 
     return await this.emailCodeRepository.save(emailCode);
+  }
+
+  async sendVerificationCode(toEmail: string, verificationCode: number, subject: string): Promise<void> {
+    const transporter = nodemailer.createTransport({
+    host: "smtp.qq.com",
+    port: 465, // or 587 for STARTTLS
+    secure: true, // true for 465, false for other ports
+    auth: {
+        user: process.env.NODEMAILER_USER, // Your email address
+        pass: process.env.NODEMAILER_PASS
+    },
+    });
+
+    const content = `<h2>Your verification code is: </h2><h1>${verificationCode}</h1><p>The verification code is valid for 5 minutes</p>`;
+
+    try {
+    let info = await transporter.sendMail({
+        from: `"BSE 👻" <${process.env.NODEMAILER_USER}>`, // sender address
+        to: toEmail, // list of receivers
+        subject: subject + "✔", // Subject line
+        html: content, // html body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    } catch (err) {
+    console.log(err);
+    throw new InternalServerErrorException('Error sending email.');
+    }
+}
+
+  async requestVerificationCode(email: string): Promise<void> {
+    if (!email) {
+    throw new InternalServerErrorException('Email is null!');
+    }
+
+    const createEmailCodeDto: CreateEmailCodeDto = {
+      email: 1,
+      level: EmailCodeLevel.Standard,
+      email_code: '123459',
+      expires_at: new Date(),
+    };
+
+
+    const verificationCode = Math.floor(1000 + Math.random() * 9000);
+    const currentTime = new Date();
+    const expirationTime = new Date(currentTime.getTime() + 5 * 60 * 1000);
+
+    await this.createOrUpdateEmailCode(createEmailCodeDto);
+    // await this.sendVerificationCode(email, verificationCode, 'Nen Verification Code');
+
   }
 }
