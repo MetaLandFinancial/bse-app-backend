@@ -40,8 +40,10 @@ describe('UsersService Integration Test', () => {
       const toEmail = "ponponpatapon@outlook.com";
       const emailCode = '123456';
       const sub = "dadasda"
+      const level = EmailCodeLevel.Standard;
 
-      const result = await service.sendVerificationCode(toEmail, emailCode, sub);
+      // const result = await service.sendVerificationCode(toEmail, emailCode, sub);
+      const result = await service.requestVerificationCode(toEmail, level);
       // expect(result).toEqual(createEmailCodeDto);
     }, 10000);
 

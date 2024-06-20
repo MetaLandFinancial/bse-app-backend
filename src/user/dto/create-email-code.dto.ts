@@ -6,7 +6,7 @@ export enum EmailCodeLevel {
 }
 
 export class CreateEmailCodeDto {
-  @IsInt()
+  @IsString()
   email: number;
 
   @IsEnum(EmailCodeLevel)

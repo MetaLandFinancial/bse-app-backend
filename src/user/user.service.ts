@@ -132,7 +132,7 @@ export class UserService {
     }
 }
 
-  async requestVerificationCode(email: string): Promise<void> {
+  async requestVerificationCode(email: string, level: EmailCodeLevel): Promise<void> {
     if (!email) {
     throw new InternalServerErrorException('Email is null!');
     }
@@ -145,14 +145,14 @@ export class UserService {
     const expirationTime = new Date(currentTime.getTime() + 5 * 60 * 1000);
 
     const createEmailCodeDto: CreateEmailCodeDto = {
-      email: email,
-      level: EmailCodeLevel.Standard,
+      email: 1,
+      level: level,
       email_code: verificationCode,
       expires_at: expirationTime,
     };
 
     await this.createOrUpdateEmailCode(createEmailCodeDto);
-    await this.sendVerificationCode(email, verificationCode, 'Nen Verification Code');
+    await this.sendVerificationCode(email, verificationCode, 'BSE Verification Code');
 
   }
 
