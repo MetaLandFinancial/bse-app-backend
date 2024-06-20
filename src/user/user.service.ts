@@ -137,9 +137,6 @@ export class UserService {
     throw new InternalServerErrorException('Email is null!');
     }
 
-
-
-
     const verificationCode = Math.floor(1000 + Math.random() * 9000).toString();
     const currentTime = new Date();
     const expirationTime = new Date(currentTime.getTime() + 5 * 60 * 1000);

@@ -2,7 +2,9 @@ import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserSignInDto } from './dto/user-sign-in.dto';
+import { RequestVerificationCodeDto } from './dto/request-verification-code.dto';
 import { User } from './user.entity';
+
 
 @Controller('users')
 export class UserController {
@@ -39,5 +41,18 @@ export class UserController {
     } catch (error) {
       throw error; // Ensure the error is thrown to be caught by the global exception filter
     }
+  }
+
+  @Post('request-verification-code')
+  @HttpCode(HttpStatus.OK)
+  async requestVerificationCode(@Body() requestVerificationCodeDto: RequestVerificationCodeDto): Promise<void> {
+    
+    try {
+      const { email, level } = requestVerificationCodeDto;
+      await this.userService.requestVerificationCode(email, level);
+    } catch (error) {
+      throw error; // Ensure the error is thrown to be caught by the global exception filter
+    }
+    
   }
 }
