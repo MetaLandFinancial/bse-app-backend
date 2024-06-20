@@ -103,7 +103,7 @@ export class UserService {
     return await this.emailCodeRepository.save(emailCode);
   }
 
-  async sendVerificationCode(toEmail: string, verificationCode: number, subject: string): Promise<void> {
+  async sendVerificationCode(toEmail: string, verificationCode: string, subject: string): Promise<void> {
     const transporter = nodemailer.createTransport({
     host: "smtp.qq.com",
     port: 465, // or 587 for STARTTLS

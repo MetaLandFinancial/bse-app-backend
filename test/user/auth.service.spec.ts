@@ -38,12 +38,12 @@ describe('UsersService Integration Test', () => {
     it('should send email', async () => {
 
       const toEmail = "ponponpatapon@outlook.com";
-      const emailCode = 123456;
+      const emailCode = '123456';
       const sub = "dadasda"
 
       const result = await service.sendVerificationCode(toEmail, emailCode, sub);
       // expect(result).toEqual(createEmailCodeDto);
-    });
+    }, 10000);
 
 
   
