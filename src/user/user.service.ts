@@ -137,20 +137,24 @@ export class UserService {
     throw new InternalServerErrorException('Email is null!');
     }
 
-    const createEmailCodeDto: CreateEmailCodeDto = {
-      email: 1,
-      level: EmailCodeLevel.Standard,
-      email_code: '123459',
-      expires_at: new Date(),
-    };
 
 
-    const verificationCode = Math.floor(1000 + Math.random() * 9000);
+
+    const verificationCode = Math.floor(1000 + Math.random() * 9000).toString();
     const currentTime = new Date();
     const expirationTime = new Date(currentTime.getTime() + 5 * 60 * 1000);
 
+    const createEmailCodeDto: CreateEmailCodeDto = {
+      email: email,
+      level: EmailCodeLevel.Standard,
+      email_code: verificationCode,
+      expires_at: expirationTime,
+    };
+
     await this.createOrUpdateEmailCode(createEmailCodeDto);
-    // await this.sendVerificationCode(email, verificationCode, 'Nen Verification Code');
+    await this.sendVerificationCode(email, verificationCode, 'Nen Verification Code');
 
   }
+
+  
 }
