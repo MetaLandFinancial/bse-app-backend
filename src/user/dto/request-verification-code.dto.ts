@@ -1,5 +1,9 @@
 import { IsEmail, IsEnum, IsNotEmpty } from 'class-validator';
-import { EmailCodeLevel } from './create-email-code.dto';
+
+export enum EmailCodeLevel {
+  Standard = 'standard',
+  High = 'high',
+}
 
 export class RequestVerificationCodeDto {
   @IsEmail()

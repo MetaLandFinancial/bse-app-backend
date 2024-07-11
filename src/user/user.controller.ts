@@ -45,11 +45,17 @@ export class UserController {
 
   @Post('request-verification-code')
   @HttpCode(HttpStatus.OK)
-  async requestVerificationCode(@Body() requestVerificationCodeDto: RequestVerificationCodeDto): Promise<void> {
+  async requestVerificationCode(@Body() requestVerificationCodeDto: RequestVerificationCodeDto): Promise<any> {
     
     try {
       const { email, level } = requestVerificationCodeDto;
       await this.userService.requestVerificationCode(email, level);
+      return {
+        statusCode: 200,
+        status: 'success',
+        message: 'Request in successfully',
+        data: { },
+      };
     } catch (error) {
       throw error; // Ensure the error is thrown to be caught by the global exception filter
     }
