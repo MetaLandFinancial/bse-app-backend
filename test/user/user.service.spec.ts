@@ -72,5 +72,17 @@ describe('UsersService Integration Test', () => {
           new UnauthorizedException('Invalid credentials'),
         );
       });
+
+      it('should update the balance of the account', async () => {
+        const email = 'admin@bse.com';
+        const newBalance = 1234.56;
+  
+        const mockAccount = { id: 1, email, balance: 1000 };
+  
+  
+        const result = await service.updateBalanceByEmail(email, newBalance);
+  
+        expect(result.balance).toBe(newBalance);
+      });
   
 });
