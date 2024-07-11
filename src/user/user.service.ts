@@ -153,5 +153,12 @@ export class UserService {
 
   }
 
-  
+  async updateBalanceByEmail(email: string, newBalance: number): Promise<User | undefined> {
+    const account = await this.userRepository.findOne({ where: { email } });
+    if (!account) {
+      throw new NotFoundException(`Account with email ${email} not found`);
+    }
+    account.balance = newBalance;
+    return this.userRepository.save(account);
+  }
 }
