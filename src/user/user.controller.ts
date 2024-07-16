@@ -59,6 +59,5 @@ export class UserController {
     } catch (error) {
       throw error; // Ensure the error is thrown to be caught by the global exception filter
     }
-    
   }
 }
