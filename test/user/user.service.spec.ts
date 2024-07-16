@@ -81,7 +81,7 @@ describe('UsersService Integration Test', () => {
   
   
         const result = await service.updateBalanceByEmail(email, newBalance);
-  
+        console.log('Result:', result);
         expect(result.balance).toBe(newBalance);
       });
   
