@@ -11,7 +11,12 @@ export class AppController {
   }
 
   @Get('test')
-  getTest(): string {
-    return "Test API";
+  getTest(): any {
+    return {
+      statusCode: 200,
+      status: 'success',
+      message: 'Test request in successfully',
+      data: { },
+    };
   }
 }
