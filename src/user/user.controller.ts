@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Body,Param, Query, HttpCode, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserSignInDto } from './dto/user-sign-in.dto';
@@ -59,5 +59,21 @@ export class UserController {
     } catch (error) {
       throw error; // Ensure the error is thrown to be caught by the global exception filter
     }
+  }
+
+  @Get('get-user-balance')
+  async getUserBalance(@Query('email') email: string): Promise<number> {
+    return this.userService.getUserBalanceByEmail(email);
+  }
+
+  @Patch('increase-balance')
+  async increaseBalance(
+    @Query('email') email: string,
+    @Body('amount') amount: number,
+  ): Promise<User | undefined> {
+    if (amount <= 0) {
+      throw new Error('Amount must be greater than zero');
+    }
+    return this.userService.increaseBalanceByEmail(email, amount);
   }
 }

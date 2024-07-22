@@ -162,13 +162,27 @@ export class UserService {
     return this.userRepository.save(account);
   }
 
+  //write a function to query balance
+  async getUserBalanceByEmail(email: string): Promise<number> {
+    const user = await this.userRepository.findOne({
+      where: { email: email },
+      select: ['balance'],
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user.balance;
+  }
+
   //write a function to increase balance by email
   async increaseBalanceByEmail(email: string, amount: number): Promise<User | undefined> {
     const account = await this.userRepository.findOne({ where: { email } });
     if (!account) {
       throw new NotFoundException(`Account with email ${email} not found`);
     }
-    account.balance += amount;
+    account.balance = parseFloat(account.balance.toString()) + amount; 
     return this.userRepository.save(account);
   }
 
@@ -178,7 +192,7 @@ export class UserService {
     if (!account) {
       throw new NotFoundException(`Account with email ${email} not found`);
     }
-    account.balance -= amount;
+    account.balance = parseFloat(account.balance.toString()) - amount; 
     return this.userRepository.save(account);
   }
 }
