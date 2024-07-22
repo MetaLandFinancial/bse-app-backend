@@ -38,4 +38,8 @@ export class BlockchainService implements OnModuleInit {
     this.eventsGateway.notifyDeposit({ from, to, value: formattedValue });
     // Add your business logic here (e.g., update user balance in the database)
   }
+
+  async check() {
+    
+  }
 }

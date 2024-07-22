@@ -161,4 +161,24 @@ export class UserService {
     account.balance = newBalance;
     return this.userRepository.save(account);
   }
+
+  //write a function to increase balance by email
+  async increaseBalanceByEmail(email: string, amount: number): Promise<User | undefined> {
+    const account = await this.userRepository.findOne({ where: { email } });
+    if (!account) {
+      throw new NotFoundException(`Account with email ${email} not found`);
+    }
+    account.balance += amount;
+    return this.userRepository.save(account);
+  }
+
+  //write a function to decrease balance by email
+  async decreaseBalanceByEmail(email: string, amount: number): Promise<User | undefined> {
+    const account = await this.userRepository.findOne({ where: { email } });
+    if (!account) {
+      throw new NotFoundException(`Account with email ${email} not found`);
+    }
+    account.balance -= amount;
+    return this.userRepository.save(account);
+  }
 }
