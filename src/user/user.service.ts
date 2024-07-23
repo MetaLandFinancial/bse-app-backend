@@ -12,6 +12,7 @@ import * as bcrypt from 'bcrypt';
 import { UserAlreadyExistsException } from '../exceptions/user-already-exists.exception';
 import { CreateEmailCodeDto, EmailCodeLevel } from './dto/create-email-code.dto';
 import * as nodemailer from 'nodemailer';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class UserService {
@@ -64,6 +65,7 @@ export class UserService {
   }
 
   async signIn(userSignInDto: UserSignInDto): Promise<any> {
+    const SECRET_KEY = process.env.JWT_SECRET;
     const { email, password } = userSignInDto;
 
     // Find the user by email
@@ -81,8 +83,9 @@ export class UserService {
     // Here you would typically generate a JWT or some other token
     // For simplicity, we are returning a success message
     const payload = { email: user.email, sub: user.id };
-    const accessToken = this.jwtService.sign({payload});
-    return { accessToken };
+    // const accessToken = this.jwtService.sign({payload});
+    const token = jwt.sign({ payload }, SECRET_KEY, { expiresIn: '60d' });
+    return { token };
   }
 
   async createOrUpdateEmailCode(createEmailCodeDto: CreateEmailCodeDto): Promise<EmailCode> {
