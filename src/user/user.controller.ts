@@ -1,10 +1,11 @@
-import { Controller, Post, Get, Patch, Body,Param, Query, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Body,Param, Query, HttpCode, HttpStatus, Request, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserSignInDto } from './dto/user-sign-in.dto';
 import { RequestVerificationCodeDto } from './dto/request-verification-code.dto';
 import { User } from './user.entity';
-
+import * as jwt from 'jsonwebtoken';
 
 @Controller('users')
 export class UserController {
@@ -32,6 +33,7 @@ export class UserController {
   async signIn(@Body() userSignInDto: UserSignInDto): Promise<any> {
     try {
       const { accessToken } = await this.userService.signIn(userSignInDto);
+      console.log('access',accessToken);
       return {
         statusCode: 200,
         status: 'success',
@@ -59,6 +61,17 @@ export class UserController {
     } catch (error) {
       throw error; // Ensure the error is thrown to be caught by the global exception filter
     }
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('get-profile-info')
+  async getProfileInfo(@Request() req): Promise<number> {
+    const SECRET_KEY = process.env.JWT_SECRET;
+    const token = req.headers.authorization.split(' ')[1]; // Extract the token from the Authorization header
+    // const decodedToken = this.jwtService.verify(token);
+    const decodedToken = jwt.verify(token, SECRET_KEY);
+    const email = decodedToken.email;
+    return this.userService.getUserBalanceByEmail(email);
   }
 
   @Get('get-user-balance')

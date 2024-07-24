@@ -84,8 +84,12 @@ export class UserService {
     // For simplicity, we are returning a success message
     const payload = { email: user.email, sub: user.id };
     // const accessToken = this.jwtService.sign({payload});
-    const token = jwt.sign({ payload }, SECRET_KEY, { expiresIn: '60d' });
-    return { token };
+    const accessToken = jwt.sign({ payload }, SECRET_KEY, { expiresIn: '60d' });
+    console.log("secret key:", SECRET_KEY);
+    console.log("Token:", accessToken);
+
+
+    return { accessToken };
   }
 
   async createOrUpdateEmailCode(createEmailCodeDto: CreateEmailCodeDto): Promise<EmailCode> {
