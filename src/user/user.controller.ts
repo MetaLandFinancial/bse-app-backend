@@ -65,17 +65,16 @@ export class UserController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('get-profile-info')
-  async getProfileInfo(@Request() req): Promise<number> {
+  async getProfileInfo(@Request() req): Promise<{ balance: number; availableBalance: number }> {
     const SECRET_KEY = process.env.JWT_SECRET;
     const token = req.headers.authorization.split(' ')[1]; // Extract the token from the Authorization header
-    // const decodedToken = this.jwtService.verify(token);
     const decodedToken = jwt.verify(token, SECRET_KEY);
     const email = decodedToken.email;
     return this.userService.getUserBalanceByEmail(email);
   }
 
   @Get('get-user-balance')
-  async getUserBalance(@Query('email') email: string): Promise<number> {
+  async getUserBalance(@Query('email') email: string): Promise<{ balance: number; availableBalance: number }> {
     return this.userService.getUserBalanceByEmail(email);
   }
 

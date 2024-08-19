@@ -170,18 +170,22 @@ export class UserService {
   }
 
   //write a function to query balance
-  async getUserBalanceByEmail(email: string): Promise<number> {
+  async getUserBalanceByEmail(email: string): Promise<{ balance: number; availableBalance: number }> {
     const user = await this.userRepository.findOne({
       where: { email: email },
-      select: ['balance'],
+      select: ['balance', 'availabel_balance'],
     });
-
+  
     if (!user) {
       throw new Error('User not found');
     }
-
-    return user.balance;
+  
+    return {
+      balance: user.balance,
+      availableBalance: user.availabel_balance,
+    };
   }
+  
 
   //write a function to increase balance by email
   async increaseBalanceByEmail(email: string, amount: number): Promise<User | undefined> {
