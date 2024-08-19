@@ -173,7 +173,7 @@ export class UserService {
   async getUserBalanceByEmail(email: string): Promise<{ balance: number; availableBalance: number }> {
     const user = await this.userRepository.findOne({
       where: { email: email },
-      select: ['balance', 'availabel_balance'],
+      select: ['balance', 'available_balance'],
     });
   
     if (!user) {
@@ -182,7 +182,7 @@ export class UserService {
   
     return {
       balance: user.balance,
-      availableBalance: user.availabel_balance,
+      availableBalance: user.available_balance,
     };
   }
   
