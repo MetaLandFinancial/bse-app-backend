@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Transaction } from './transaction.entity'; // Assuming you've created an entity for the transactions table
@@ -11,11 +11,6 @@ export class TransactionService {
     private transactionsRepository: Repository<Transaction>,
   ) {}
 
-  // Insert a new transaction
-  async create(transactionDto: CreateTransactionDto): Promise<Transaction> {
-    const transaction = this.transactionsRepository.create(transactionDto);
-    return await this.transactionsRepository.save(transaction);
-  }
 
   // Query transactions
   async findAll(): Promise<Transaction[]> {
@@ -31,4 +26,21 @@ export class TransactionService {
   async findOne(id: number): Promise<Transaction> {
     return await this.transactionsRepository.findOneBy({ id });
   }
+
+  // Insert a new transaction
+  async create(transactionDto: CreateTransactionDto): Promise<Transaction> {
+    const transaction = this.transactionsRepository.create(transactionDto);
+    return await this.transactionsRepository.save(transaction);
+  }
+
+    // Update transaction status by id
+    async updateStatus(id: number, status: string): Promise<Transaction> {
+        const transaction = await this.transactionsRepository.findOneBy({ id });
+        if (!transaction) {
+          throw new NotFoundException(`Transaction with id ${id} not found`);
+        }
+    
+        transaction.status = status;
+        return await this.transactionsRepository.save(transaction);
+    }
 }

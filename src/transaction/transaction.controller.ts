@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto'; // Assuming you have a DTO for transaction creation
 import { Transaction } from './transaction.entity';
@@ -30,4 +30,13 @@ export class TransactionController {
   async findOne(@Param('id') id: number): Promise<Transaction> {
     return this.transactionsService.findOne(id);
   }
+
+    // Update transaction status
+    @Patch(':id/status')
+    async updateStatus(
+      @Param('id') id: number,
+      @Body('status') status: string,
+    ): Promise<Transaction> {
+      return this.transactionsService.updateStatus(id, status);
+    }
 }
