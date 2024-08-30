@@ -10,6 +10,7 @@ export class TransactionController {
   // Insert a new transaction
   @Post('createTransaction')
   async create(@Body() createTransactionDto: CreateTransactionDto): Promise<Transaction> {
+    console.log(createTransactionDto);
     return this.transactionsService.create(createTransactionDto);
   }
 
