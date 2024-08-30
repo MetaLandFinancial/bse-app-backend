@@ -8,7 +8,7 @@ export class TransactionController {
   constructor(private readonly transactionsService: TransactionService) {}
 
   // Insert a new transaction
-  @Post()
+  @Post('createTransaction')
   async create(@Body() createTransactionDto: CreateTransactionDto): Promise<Transaction> {
     return this.transactionsService.create(createTransactionDto);
   }
